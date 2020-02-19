@@ -1,6 +1,6 @@
 <template>
   <div>
-    app.vue
+    <router-link to="#">点我啊123131321</router-link>
   </div>
 </template>
 
