@@ -11,6 +11,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
 
+
 new Vue({
   // 4. 路由注入
   router,
