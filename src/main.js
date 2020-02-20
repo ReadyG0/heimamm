@@ -11,6 +11,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
 
+// 导入基础css
+import "./style/base.css"
 
 new Vue({
   // 4. 路由注入
