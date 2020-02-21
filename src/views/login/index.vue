@@ -39,27 +39,31 @@
         <!-- 登陆与注册 -->
         <el-form-item>
           <el-button class="login-btn" type="primary" @click="onSubmit">登录</el-button>
-          <el-button class="login-btn" type="primary">登录</el-button>
+          <el-button class="login-btn" type="primary" @click="showReg">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- 右侧图片 -->
     <img src="../images/login_banner_ele.png" alt />
+
+    <!-- 注册对话框 -->
+    <register ref="register"></register>
   </div>
 </template>
 
 <script>
+import register from "../components/register.vue";
 export default {
+  components: {
+    register
+  },
   data() {
     return {
       form: {
         user: "",
         password: "",
         code: "",
-        agree: false,
-        // delivery: false,
-        // type: [],
-        // resource: "",
+        agree: false
       },
       rules: {
         user: [
@@ -94,6 +98,9 @@ export default {
           return false;
         }
       });
+    },
+    showReg() {
+      this.$refs.register.dialogFormVisible = true;
     }
   }
 };
