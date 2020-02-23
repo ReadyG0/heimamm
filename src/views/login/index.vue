@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import register from "../components/register.vue";
+import register from "./components/register.vue";
 export default {
   components: {
     register
