@@ -3,15 +3,15 @@
     <!-- 左侧登录盒子 -->
     <div class="login-box">
       <div class="login-title">
-        <img src="../images/login_logo.png" alt />
+        <img src="./images/login_logo.png" alt />
         <span class="title_left">黑马面面</span>
         <span class="line"></span>
         <span class="title_right">用户登录</span>
       </div>
       <el-form ref="form" :rules="rules" :model="form" label-width="0px">
-        <!-- 用户名 -->
+        <!-- 用户名/手机号 -->
         <el-form-item prop="user">
-          <el-input v-model="form.user" prefix-icon="el-icon-user"></el-input>
+          <el-input v-model="form.user" placeholder='请输入手机号' prefix-icon="el-icon-user"></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
@@ -24,7 +24,7 @@
               <el-input v-model="form.code" prefix-icon="el-icon-key"></el-input>
             </el-col>
             <el-col :span="7">
-              <img src="../images/login_captcha.png" class="code-img" />
+              <img :src="loginCode" @click="changeCode" class="code-img" />
             </el-col>
           </el-row>
         </el-form-item>
@@ -44,7 +44,7 @@
       </el-form>
     </div>
     <!-- 右侧图片 -->
-    <img src="../images/login_banner_ele.png" alt />
+    <img src="./images/login_banner_ele.png" alt />
 
     <!-- 注册对话框 -->
     <register ref="register"></register>
@@ -53,12 +53,15 @@
 
 <script>
 import register from "./components/register.vue";
+import {getLoginCode} from "@/api/login";
+import {setToken} from "@/utilis/token.js";
 export default {
   components: {
     register
   },
   data() {
     return {
+      loginCode:process.env.VUE_APP_BASE_URL + '/captcha?type=login',
       form: {
         user: "",
         password: "",
@@ -67,8 +70,8 @@ export default {
       },
       rules: {
         user: [
-          { required: true, message: "请输入账号", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          { pattern: /0?(13|14|15|18|17)[0-9]{9}/, message: "请输入正确的手机号", trigger: "blur" }
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
@@ -88,11 +91,32 @@ export default {
     };
   },
   methods: {
+    changeCode(){
+      this.loginCode=process.env.VUE_APP_BASE_URL + '/captcha?type=login&t='+Date.now();
+    },
     onSubmit() {
       // console.log("submit!");
       this.$refs["form"].validate(valid => {
         if (valid) {
           alert("成功");
+          getLoginCode({
+            phone:this.form.user,
+            password:this.form.password,
+            code:this.form.code,
+          }).then(res=>{
+            window.console.log(res);
+            if(res.data.code == 200 ) {
+              // 把token存起来
+              // window.localStorage.setItem('mmToken',res.data.data.token);
+              setToken(res.data.data.token);
+              this.$message.success("登录成功");
+              // 路由跳转到主页
+              this.$router.push("/index");
+            } else {
+              this.$message.error(res.data.message);  
+            }
+          })
+
         } else {
           alert("111");
           return false;
